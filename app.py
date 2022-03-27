@@ -4,10 +4,12 @@ from flask import Flask, request
 from pymessenger.bot import Bot
 from dotenv import load_dotenv
 
-app = Flask(__name__)
+load_dotenv()
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN_MESSENGER")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN_MESSENGER")
 bot = Bot(ACCESS_TOKEN)
+
+app = Flask(__name__)
 
 #We will receive messages that Facebook sends our bot at this endpoint 
 @app.route("/", methods=['GET', 'POST'])
@@ -58,5 +60,4 @@ def send_message(recipient_id, response):
     return "success"
 
 if __name__ == "__main__":
-    load_dotenv()
     app.run()
