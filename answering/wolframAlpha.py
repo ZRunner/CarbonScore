@@ -26,6 +26,6 @@ def answer(question : str) -> str:
     print("Response : "+response.text)
     translated : str = translator.translate(response.text, dest="fr").text
     print("Translated answer : "+translated)
-    if(response.status_code):
+    if(response.status_code == 501):
         translated = "Je ne sais pas répondre à ce message"
     return translated
