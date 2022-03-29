@@ -18,7 +18,7 @@ def answer(question : str) -> str:
         str: French response
     """
     print("Question : "+question)
-    question = answer(translator.translate(question, dest="en").text)
+    question = translator.translate(question, dest="en").text
     print("Translated question : "+question)
     url : str = "https://api.wolframalpha.com/v1/result?appid="+os.getenv("WOLFRAMALPHA_API_KEY")+"&i="+urllib.parse.quote(question,safe="")
     response : str = requests.get(url)
