@@ -1,6 +1,7 @@
 from urllib import response
 import requests
 import os
+import json
 import urllib.parse
 from dotenv import load_dotenv
 from googletrans import Translator
@@ -25,5 +26,6 @@ def answer(question : str) -> str:
     print("Response : "+response.text)
     translated : str = translator.translate(response.text, dest="fr").text
     print("Translated answer : "+translated)
+    if(response.status_code):
+        translated = "Je ne sais pas répondre à ce message"
     return translated
-    
