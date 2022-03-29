@@ -2,6 +2,7 @@ import random
 import os
 from flask import Flask, request
 from pymessenger.bot import Bot
+import Answering.wolframAlpha as WolframAlpha
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -32,8 +33,7 @@ def receive_message():
                 if message['message'].get('text'):
                     # response_sent_text = get_message()
                     response_sent_text = message['message'].get('text')
-                    print(message['message'].get('text'))
-                    send_message(recipient_id, response_sent_text)
+                    send_message(recipient_id, WolframAlpha.answer(message['message'].get('text')))
                 #if user sends us a GIF, photo,video, or any other non-text item
                 if message['message'].get('attachments'):
                     response_sent_nontext = get_message()
