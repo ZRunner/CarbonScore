@@ -2,7 +2,7 @@ import random
 import os
 from flask import Flask, request
 from pymessenger.bot import Bot
-import Answering.wolframAlpha as WolframAlpha
+import answering.wolframAlpha as WolframAlpha
 from dotenv import load_dotenv
 
 load_dotenv()
