@@ -33,7 +33,7 @@ def get_heater_sources(sentence: str) -> dict[str, int]:
 
     # on lit tous les mots de la phrase
     for word in doc:
-        if word.is_stop or word in {"chauffe"}:
+        if word.is_stop or word.text in {"chauffe"}:
             continue
         max_value: float = 0.55 # plus grande similarité de source pour ce mot
         max_src: str = None # source la plus proche de ce mot (None si aucune)
@@ -69,11 +69,59 @@ def get_time_hours(sentence: str) -> Optional[int]:
         return int(match.group(1))
     return None
 
+def get_diet(sentence: str) -> int:
+    sources = [
+        "végétarien",
+        "végan",
+        "normal",
+        "tout"
+    ]
+    
+    result = []
+    doc = parse_msg(sentence)
+    # on lit tous les mots de la phrase
+    for word in doc:
+        max_value: float = 0.55 # plus grande similarité de source pour ce mot
+        max_src: str = None # source la plus proche de ce mot (None si aucune)
+        if (word.text in {"vege","végé","vége","vegé"}):
+            result.append("végétarien")
+        # on regarde chaque source
+        for source in sources:
+            score = word.similarity(nlp(source))
+            if score > max_value:
+                max_src = source
+                max_value = score
+        # si on a trouvé un mot similaire
+        if max_src:
+            result.append(max_src)
+            
+    if ("normal" in result #N'est pas vegan ni vegetarien
+        or "tout" in result 
+        or (not "végan" in result
+            and not "végétarien" in result)):
+        return 1144+408
+    elif ("végétarien" in result): #Est vegetarien
+        return 408
+    else: #Est vegan
+        return 0
+    
+def get_clothes_number(sentence: str) -> int:
+    result = 0
+    i = 0
+    for match in re.findall(r'(\d+) ?(?:vêtements?|vetements)?', sentence.lower()):
+        match: str
+        i += 1
+        result += int(match.replace(' ', ''))
+    return int(result/i) if i != 0 else 0
+
 if __name__ == '__main__':
     # src = get_heater_sources("Je me réchauffe principalement au fioul")
     # surface = get_heater_surface("J'ai 1 151,7 m²")
     # print(src, surface)
     # print(get_heater_carbon(src, surface))
-    print(get_distance_km("J'utilise la voiture 12km par semaine, on est avec 3 personnes"))
-    print(get_distance_km("5km par semaine en moyenne, avec 4 autres collègues"))
-    print(get_distance_km("je ne prend jamais ma voiture"))
+    # print(get_distance_km("J'utilise la voiture 12km par semaine, on est avec 3 personnes"))
+    # print(get_distance_km("5km par semaine en moyenne, avec 4 autres collègues"))
+    # print(get_distance_km("je ne prend jamais ma voiture"))
+    # print(get_diet("Je mange de tout et de temps en temps je suis vegan"))
+    print(get_clothes_number("Environ entre 15 et 8 vêtements"))
+    print(get_clothes_number("Je suis pauvre"))
