@@ -1,4 +1,3 @@
-import json
 import random
 import os
 from flask import Flask, request
