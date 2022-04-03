@@ -14,7 +14,7 @@ def get_heater_carbon(sources: dict[str, int], surface: int) -> Optional[int]:
 
 def get_heater_surface(sentence: str) -> int:
     if sentence.isnumeric():
-        print("surface:", result)
+        print("surface:", int(sentence))
         return int(sentence)
     result = 0
     for match in re.findall(r'([\d\s]+)(?:[,.]\d+\s*)?(?:m|mètre|metre)', sentence.lower()):
@@ -56,7 +56,7 @@ def get_heater_sources(sentence: str) -> dict[str, int]:
 
 def get_distance_km(sentence: str) -> Optional[int]:
     if sentence.isnumeric():
-        print("car distance:", result)
+        print("car distance:", int(sentence))
         return int(sentence)
     if nlp(sentence).similarity(nlp("je ne prend pas la voiture")) > 0.8:
         return 0
