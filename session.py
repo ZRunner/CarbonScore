@@ -81,12 +81,12 @@ class Session:
         return self.screen_time*40 if self.screen_time else None
     
     @property
-    def meal_emission(self): # /an
-        return self.diet if self.diet else None
+    def meal_emission(self): # gCO2/an
+        return self.diet*1000 if self.diet else None
     
     @property
     def clothes_emission(self): # / mois
-        return self.clothes_count*15 if self.clothes_count else None
+        return self.clothes_count*15_000 if self.clothes_count else None
     
     @property
     def total(self): # gCO2/an
