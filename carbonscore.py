@@ -14,11 +14,13 @@ def get_heater_carbon(sources: dict[str, int], surface: int) -> Optional[int]:
 
 def get_heater_surface(sentence: str) -> int:
     if sentence.isnumeric():
+        print("surface:", result)
         return int(sentence)
     result = 0
     for match in re.findall(r'([\d\s]+)(?:[,.]\d+\s*)?(?:m|mètre|metre)', sentence.lower()):
         match: str
         result += int(match.replace(' ', ''))
+    print("surface:", result)
     return result
 
 def get_heater_sources(sentence: str) -> dict[str, int]:
@@ -49,10 +51,12 @@ def get_heater_sources(sentence: str) -> dict[str, int]:
         # si on a trouvé un mot similaire
         if max_src:
             result[max_src] = sources[max_src]
+    print("heater sources:", result)
     return result
 
 def get_distance_km(sentence: str) -> Optional[int]:
     if sentence.isnumeric():
+        print("car distance:", result)
         return int(sentence)
     if nlp(sentence).similarity(nlp("je ne prend pas la voiture")) > 0.8:
         return 0
@@ -66,6 +70,7 @@ def get_distance_km(sentence: str) -> Optional[int]:
         # number of *other* people
         elif match2 := re.search(r'(\d+) autres? (?:passagers?|personnes)?', sentence.lower()):
             result *= int(match2.group(1)) + 1
+    print("car distance:", result)
     return result
 
 def get_time_hours(sentence: str) -> Optional[int]:
@@ -105,10 +110,13 @@ def get_diet(sentence: str) -> int:
         or "tout" in result 
         or (not "végan" in result
             and not "végétarien" in result)):
+        print("diet: normal")
         return 1144+408
     elif ("végétarien" in result): #Est vegetarien
+        print("diet: vetegarien")
         return 408
     else: #Est vegan
+        print("diet: vegan")
         return 0
     
 def get_clothes_number(sentence: str) -> int:

@@ -44,7 +44,8 @@ class Session:
         if self.clothes_count is None:
             return "Combien de vêtements neufs achetez-vous chaque mois ?"
         total = round(self.total/1000)
-        delta = total - 12_092
+        # voiture + energies + habillement + technologies + viandes/poissons + lait/œufs
+        delta = total - (1972+1696+763+1180+1144+408)
         return f"Votre empreinte carbonne moyenne est de {total}kg de CO2 par an, soit {abs(delta)}kg {'de plus' if delta>0 else 'de moins'} que la moyenne française."
     
     def get_car_usage(self, msg: str):
@@ -90,3 +91,16 @@ class Session:
     @property
     def total(self): # gCO2/an
         return round(self.car_emission*52 + self.heating_emission + self.screen_emission*365.25 + self.meal_emission + self.clothes_emission*12)
+    
+    def __str__(self):
+        return f"Session(userid={self.userid} total={self.total})"
+    
+    def to_dict(self):
+        return {
+            "car": self.car_emission,
+            "heating": self.heating_emission,
+            "screen": self.screen_emission,
+            "meal": self.meal_emission,
+            "clothes": self.clothes_emission,
+            "total": self.total
+        }
