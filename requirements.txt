@@ -1,6 +1,3 @@
-chatterbot2
-spacy
-PyYAML
 flask
 pymessenger
 gunicorn
