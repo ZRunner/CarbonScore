@@ -41,7 +41,7 @@ def receive_message():
                     session = sessions.get(recipient_id, Session(recipient_id))
                     if callback := session.get_callback():
                         callback(user_message)
-                        send_message(session.get_next_question())
+                        send_message(recipient_id, session.get_next_question())
                     else:
                         send_message(recipient_id, WolframAlpha.answer(user_message))
                         
