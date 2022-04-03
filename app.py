@@ -1,10 +1,12 @@
-import random
+import logging
 import os
+import random
+
+from dotenv import load_dotenv
 from flask import Flask, request
 from pymessenger.bot import Bot
-import answering.wolframAlpha as WolframAlpha
-from dotenv import load_dotenv
 
+import answering.wolframAlpha as WolframAlpha
 from session import Session
 
 load_dotenv()
@@ -13,6 +15,8 @@ VERIFY_TOKEN = os.getenv("VERIFY_TOKEN_MESSENGER")
 bot = Bot(ACCESS_TOKEN)
 
 app = Flask(__name__)
+
+app.logger.setLevel(logging.DEBUG)
 
 sessions: dict[str, Session] = {}
 
