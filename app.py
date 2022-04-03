@@ -41,12 +41,13 @@ def receive_message():
     return "Message Processed"
 
 
-def verify_fb_token(token_sent):
+def verify_fb_token(token_sent: str):
     #take token sent by facebook and verify it matches the verify token you sent
-    #if they match, allow the request, else return an error 
+    #if they match, allow the request, else return an error
+    err = 'Invalid verification token'
     if token_sent == VERIFY_TOKEN:
-        return request.args.get("hub.challenge")
-    return 'Invalid verification token'
+        return request.args.get("hub.challenge") or err
+    return err
 
 
 #chooses a random message to send to the user
