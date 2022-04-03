@@ -39,6 +39,7 @@ def receive_message():
                     user_message: str = message['message'].get('text')
                     session = sessions.get(recipient_id, Session(recipient_id))
                     if callback := session.get_callback():
+                        app.logger.info(f"{recipient_id=}  {callback=} {session.get_next_question()}")
                         callback(user_message)
                         send_message(recipient_id, session.get_next_question())
                     else:
