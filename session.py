@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Callable, Optional
 
 from carbonscore import get_clothes_number, get_diet, get_distance_km, get_heater_carbon, get_heater_sources, get_heater_surface, get_time_hours
@@ -6,6 +7,7 @@ from carbonscore import get_clothes_number, get_diet, get_distance_km, get_heate
 class Session:
     def __init__(self, userid: str):
         self.userid = userid
+        self.last_activity = datetime.now()
         self.car_usage: Optional[int] = None # km/semaine
         self.flat_surface: Optional[int] = None # m²
         self.heating_sources: Optional[dict[str, int]] = None

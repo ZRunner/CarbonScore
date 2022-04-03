@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 import os
 import random
@@ -56,6 +57,8 @@ def treat_message(recipient_id: str, user_message: str):
     else:
         session = Session(recipient_id)
         sessions[recipient_id] = session
+    # update last activity
+    session.last_activity = datetime.now()
     if callback := session.get_callback():
         # if a carbon report is in progress, process the user response then answer
         callback(user_message)
