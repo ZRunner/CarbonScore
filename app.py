@@ -6,12 +6,16 @@ from pymessenger.bot import Bot
 import answering.wolframAlpha as WolframAlpha
 from dotenv import load_dotenv
 
+from session import Session
+
 load_dotenv()
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN_MESSENGER")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN_MESSENGER")
 bot = Bot(ACCESS_TOKEN)
 
 app = Flask(__name__)
+
+sessions: dict[str, Session] = {}
 
 #We will receive messages that Facebook sends our bot at this endpoint 
 @app.route("/", methods=['GET', 'POST'])
@@ -30,11 +34,17 @@ def receive_message():
           for message in messaging:
             if message.get('message'):
                 #Facebook Messenger ID for user so we know where to send response back to
-                recipient_id = message['sender']['id']
+                recipient_id: str = message['sender']['id']
                 if message['message'].get('text'):
                     # response_sent_text = get_message()
-                    response_sent_text = message['message'].get('text')
-                    send_message(recipient_id, WolframAlpha.answer(message['message'].get('text')))
+                    user_message: str = message['message'].get('text')
+                    session = sessions.get(recipient_id, Session(recipient_id))
+                    if callback := session.get_callback():
+                        callback(user_message)
+                        send_message(session.get_next_question())
+                    else:
+                        send_message(recipient_id, WolframAlpha.answer(user_message))
+                        
                 #if user sends us a GIF, photo,video, or any other non-text item
                 if message['message'].get('attachments'):
                     response_sent_nontext = get_message()
