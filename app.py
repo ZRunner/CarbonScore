@@ -41,12 +41,18 @@ def receive_message():
                 if message['message'].get('text'):
                     # response_sent_text = get_message()
                     user_message: str = message['message'].get('text')
-                    session = sessions.get(recipient_id, Session(recipient_id))
+                    # retrieve user session
+                    if recipient_id in sessions:
+                        session = sessions.get(recipient_id)
+                    else:
+                        session = Session(recipient_id)
+                        sessions[recipient_id] = session
                     if callback := session.get_callback():
-                        app.logger.info(f"{recipient_id=}  {callback=} {session.get_next_question()}")
+                        app.logger.info(f"{recipient_id=}  msg={user_message} callback={callback.__name__} next={session.get_next_question()}")
                         callback(user_message)
                         send_message(recipient_id, session.get_next_question())
                     else:
+                        app.logger.info(f"NO CALLBACK {recipient_id=}  msg={user_message}")
                         send_message(recipient_id, WolframAlpha.answer(user_message))
                         
                 #if user sends us a GIF, photo,video, or any other non-text item
