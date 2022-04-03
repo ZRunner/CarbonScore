@@ -1,6 +1,6 @@
 from typing import Callable, Optional
 
-from carbonscore import get_diet, get_distance_km, get_heater_carbon, get_heater_sources, get_heater_surface, get_time_hours
+from carbonscore import get_clothes_number, get_diet, get_distance_km, get_heater_carbon, get_heater_sources, get_heater_surface, get_time_hours
 
 
 class Session:
@@ -61,7 +61,7 @@ class Session:
         self.diet = get_diet(msg)
     
     def get_clothes_count(self, msg: str):
-        ...
+        self.clothes_count = get_clothes_number(msg)
 
     @property
     def car_emission(self): # /semaine

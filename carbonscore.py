@@ -33,7 +33,7 @@ def get_heater_sources(sentence: str) -> dict[str, int]:
 
     # on lit tous les mots de la phrase
     for word in doc:
-        if word.is_stop or word in {"chauffe"}:
+        if word.is_stop or word.text in {"chauffe"}:
             continue
         max_value: float = 0.55 # plus grande similarité de source pour ce mot
         max_src: str = None # source la plus proche de ce mot (None si aucune)
@@ -105,6 +105,14 @@ def get_diet(sentence: str) -> int:
     else: #Est vegan
         return 0
     
+def get_clothes_number(sentence: str) -> int:
+    result = 0
+    i = 0
+    for match in re.findall(r'(\d+) ?(?:vêtements?|vetements)?', sentence.lower()):
+        match: str
+        i += 1
+        result += int(match.replace(' ', ''))
+    return int(result/i) if i != 0 else 0
 
 if __name__ == '__main__':
     # src = get_heater_sources("Je me réchauffe principalement au fioul")
@@ -114,4 +122,6 @@ if __name__ == '__main__':
     # print(get_distance_km("J'utilise la voiture 12km par semaine, on est avec 3 personnes"))
     # print(get_distance_km("5km par semaine en moyenne, avec 4 autres collègues"))
     # print(get_distance_km("je ne prend jamais ma voiture"))
-    print(get_diet("Je mange de tout et de temps en temps je suis vegan"))
+    # print(get_diet("Je mange de tout et de temps en temps je suis vegan"))
+    print(get_clothes_number("Environ entre 15 et 8 vêtements"))
+    print(get_clothes_number("Je suis pauvre"))
