@@ -20,8 +20,8 @@ def get_heater_surface(sentence: str) -> int:
     for match in re.findall(r'([\d\s]+)(?:[,.]\d+\s*)?(?:m|mètre|metre)', sentence.lower()):
         match: str
         result += int(match.replace(' ', ''))
-    print("surface:", result)
-    return result
+    print("surface:", result or None)
+    return result or None
 
 def get_heater_sources(sentence: str) -> dict[str, int]:
     sources = {
@@ -51,8 +51,8 @@ def get_heater_sources(sentence: str) -> dict[str, int]:
         # si on a trouvé un mot similaire
         if max_src:
             result[max_src] = sources[max_src]
-    print("heater sources:", result)
-    return result
+    print("heater sources:", result or None)
+    return result or None
 
 def get_distance_km(sentence: str) -> Optional[int]:
     if sentence.isnumeric():
@@ -74,11 +74,16 @@ def get_distance_km(sentence: str) -> Optional[int]:
     return result
 
 def get_time_hours(sentence: str) -> Optional[int]:
+    result = None
     if sentence.isnumeric():
-        return int(sentence)
-    if match := re.search(r'(\d+) ?(?:h)', sentence.lower()):
-        return int(match.group(1))
-    return None
+        result = int(sentence)
+    elif match := re.search(r'(\d+) ?(?:h)', sentence.lower()):
+        result = int(match.group(1))
+    # check for aberations
+    if result > 24*7:
+        result = None
+    print("screen time:", result)
+    return result
 
 def get_diet(sentence: str) -> int:
     sources = [
@@ -123,12 +128,12 @@ def get_clothes_number(sentence: str) -> int:
     if sentence.isnumeric():
         return int(sentence)
     result = 0
-    i = 0
+    count = 0
     for match in re.findall(r'(\d+) ?(?:vêtements?|vetements)?', sentence.lower()):
         match: str
-        i += 1
+        count += 1
         result += int(match.replace(' ', ''))
-    return int(result/i) if i != 0 else 0
+    return int(result/count) if count != 0 else None
 
 if __name__ == '__main__':
     # src = get_heater_sources("Je me réchauffe principalement au fioul")
