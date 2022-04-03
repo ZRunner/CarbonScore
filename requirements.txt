@@ -4,3 +4,4 @@ pymessenger
 gunicorn
 python-dotenv
 googletrans==3.1.0a0
+https://github.com/explosion/spacy-models/releases/download/fr_core_news_lg-3.2.0/fr_core_news_lg-3.2.0-py3-none-any.whl
