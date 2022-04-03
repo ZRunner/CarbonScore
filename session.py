@@ -43,7 +43,9 @@ class Session:
             #return "Combien de vos repas sont composés de viande rouge par semaine ? (bœuf, mouton...)"
         if self.clothes_count is None:
             return "Combien de vêtements neufs achetez-vous chaque mois ?"
-        return None
+        total = round(self.total/1000)
+        delta = total - 12_092
+        return f"Votre empreinte carbonne moyenne est de {total}kg de CO2 par an, soit {abs(delta)}kg {'de plus' if delta>0 else 'de moins'} que la moyenne française."
     
     def get_car_usage(self, msg: str):
         self.car_usage = get_distance_km(msg)
