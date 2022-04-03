@@ -63,13 +63,13 @@ def get_distance_km(sentence: str) -> Optional[int]:
     result = None
     # distance
     if match := re.search(r'([\d\s]+)(?:[,.]\d+\s*)?(?:km|kilomètres?)', sentence.lower()):
-        result = int(match.group(1))
+        result = int(match.group(1).replace(' ', ''))
         # number of people
         if match2 := re.search(r'(\d+) (?:passagers?|personnes)', sentence.lower()):
-            result *= int(match2.group(1))
+            result *= int(match2.group(1).replace(' ', ''))
         # number of *other* people
         elif match2 := re.search(r'(\d+) autres? (?:passagers?|personnes)?', sentence.lower()):
-            result *= int(match2.group(1)) + 1
+            result *= int(match2.group(1).replace(' ', '')) + 1
     print("car distance:", result)
     return result
 
