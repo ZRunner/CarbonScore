@@ -80,7 +80,7 @@ def get_time_hours(sentence: str) -> Optional[int]:
     elif match := re.search(r'(\d+) ?(?:h)', sentence.lower()):
         result = int(match.group(1))
     # check for aberations
-    if result > 24*7:
+    if result is not None and result > 24*7:
         result = None
     print("screen time:", result)
     return result
