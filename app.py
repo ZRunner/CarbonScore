@@ -23,8 +23,13 @@ sessions: dict[str, Session] = {}
 
 presentation_message = """Bonjour, je suis le chatbot CarbonScore 👋
 
-Mon but est de répondre à vos questions sur les émissions de carbone et de vous aider à établir votre propre bilan carbone.
+Mon but est de répondre à vos questions sur les émissions de carbone et de vous aider à établir votre propre bilan carbone 🌱
+
 Si vous souhaitez commencer votre bilan carbone, dites simplement "bilan carbone". Sinon, je serai ravi de répondre à toutes vos questions !"""
+
+report_starting_message = """Ok, c'est parti pour le bilan carbone !
+
+Vous verrez, c'est vraiment simple. Je vais vous poser quelques questions sur vos habitudes de vie, et vous aurez votre consommation carbone annuelle en moins de 5 minutes !"""
 
 # We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
@@ -73,6 +78,7 @@ def treat_message(recipient_id: str, user_message: str):
     # check if we should start a carbon report
     if user_message.lower() == "bilan carbone":
         session.started_report = True
+        send_message(recipient_id, report_starting_message)
     if callback := session.get_callback():
         # if a carbon report is in progress, process the user response then answer
         callback(user_message)
