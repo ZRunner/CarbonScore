@@ -143,3 +143,4 @@ if __name__ == '__main__':
     # print(get_diet("Je mange de tout et de temps en temps je suis vegan"))
     # print(get_clothes_number("Environ entre 15 et 8 vêtements"))
     # print(get_clothes_number("Je suis pauvre"))
+    pass
