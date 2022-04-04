@@ -8,6 +8,7 @@ from flask import Flask, request
 from pymessenger.bot import Bot
 
 import answering.wolframAlpha as WolframAlpha
+from answers import AnswersManager
 from session import Session
 
 load_dotenv()
@@ -19,6 +20,7 @@ app = Flask(__name__)
 
 app.logger.setLevel(logging.DEBUG)
 
+answerManager = AnswersManager()
 sessions: dict[str, Session] = {}
 
 presentation_message = """Bonjour, je suis le chatbot CarbonScore 👋
@@ -87,6 +89,10 @@ def treat_message(recipient_id: str, user_message: str):
         if session.has_ended:
             app.logger.info(f"{recipient_id=}  {session.to_dict()}")
         send_message(recipient_id, session.get_next_message())
+    elif answer := answerManager.get_answer(user_message):
+         # use WolframAlpha to get an answer
+        app.logger.info(f"{recipient_id=}  msg=\"{user_message}\" {answer=}")
+        send_message(recipient_id, answer)
     else:
         # use WolframAlpha to get an answer
         app.logger.info(f"{recipient_id=}  msg=\"{user_message}\"")
