@@ -83,6 +83,8 @@ def treat_message(recipient_id: str, user_message: str):
         # if a carbon report is in progress, process the user response then answer
         callback(user_message)
         app.logger.info(f"{recipient_id=}  msg=\"{user_message}\" callback={callback.__name__} next=\"{session.get_next_message()}\"")
+        if session.has_ended:
+            app.logger.info(f"{recipient_id=}  {session.to_dict()}")
         send_message(recipient_id, session.get_next_message())
     else:
         # use WolframAlpha to get an answer

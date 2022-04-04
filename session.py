@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Callable, Optional
 
+from pyparsing import Literal
+
 from carbonscore import get_clothes_number, get_diet, get_distance_km, get_heater_carbon, get_heater_sources, get_heater_surface, get_time_hours
 
 
@@ -13,7 +15,7 @@ class Session:
         self.flat_surface: Optional[int] = None # m²
         self.heating_sources: Optional[dict[str, int]] = None
         self.screen_time: Optional[float] = None # par jour
-        self.diet : Optional[int] = None # par an
+        self.diet : Optional[Literal['normal', 'vegetarien', 'vegan']] = None # par an
         #self.redmeal_count: Optional[int] = None # par semaine
         self.clothes_count: Optional[int] = None # par mois
     
@@ -61,25 +63,33 @@ class Session:
         total = round(self.total/1000)
         # voiture + energies + habillement + technologies + viandes/poissons + lait/œufs
         delta = total - (1972+1696+763+1180+1144+408)
-        return f"Votre empreinte carbonne moyenne est de {total}kg de CO2 par an, soit {abs(delta)}kg {'de plus' if delta>0 else 'de moins'} que la moyenne française."
+        return f"""Votre empreinte carbonne moyenne est de {total}kg de CO2 par an, soit {abs(delta)}kg {'de plus' if delta>0 else 'de moins'} que la moyenne française.
+        
+        Si vous avez d'autres question, je reste à votre disposition !"""
     
     def get_car_usage(self, msg: str):
         self.car_usage = get_distance_km(msg)
+        print("Car usage:", self.car_usage)
     
     def get_flat_surface(self, msg: str):
         self.flat_surface = get_heater_surface(msg)
+        print("Flat surface:", self.flat_surface)
 
     def get_heating_sources(self, msg: str):
         self.heating_sources = get_heater_sources(msg)
+        print("heating sources:", self.heating_sources)
     
     def get_screen_time(self, msg: str):
         self.screen_time = get_time_hours(msg)
+        print("screen time:", self.screen_time)
     
     def get_alimentation_diet(self, msg: str):
         self.diet = get_diet(msg)
+        print("diet:", self.diet)
     
     def get_clothes_count(self, msg: str):
         self.clothes_count = get_clothes_number(msg)
+        print("clothes count:", self.clothes_count)
 
     @property
     def car_emission(self): # /semaine
@@ -97,7 +107,12 @@ class Session:
     
     @property
     def meal_emission(self): # gCO2/an
-        return self.diet*1000 if self.diet else None
+        emissions = {
+            "normal": 1144+408,
+            "vegetarien": 408,
+            "vegan": 0
+        }
+        return emissions[self.diet]*1000 if self.diet else None
     
     @property
     def clothes_emission(self): # / mois
