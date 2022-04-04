@@ -13,7 +13,7 @@ class Session:
         self.last_activity = datetime.now()
         self.car_usage: Optional[int] = None # km/semaine
         self.flat_surface: Optional[int] = None # m²
-        self.heating_sources: Optional[list[str]] = None
+        self.heating_sources: Optional[set[str]] = None
         self.screen_time: Optional[float] = None # par jour
         self.diet: Optional[Literal['normal', 'vegetarien', 'vegan']] = None # par an
         #self.redmeal_count: Optional[int] = None # par semaine

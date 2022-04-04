@@ -6,7 +6,7 @@ from parsing import parse_msg
 
 nlp = spacy.load("fr_core_news_lg")
 
-def get_heater_carbon(sources: list[str], surface: int) -> Optional[int]:
+def get_heater_carbon(sources: set[str], surface: int) -> Optional[int]:
     if len(sources) == 0:
         return None
     values = {
@@ -29,9 +29,9 @@ def get_heater_surface(sentence: str) -> int:
         result += int(match.replace(' ', ''))
     return result or None
 
-def get_heater_sources(sentence: str) -> Optional[list[str]]:
+def get_heater_sources(sentence: str) -> Optional[set[str]]:
     sources = ["fioul", "gaz", "électricité", "radiateur", "biométhane", "bois"]
-    result = []
+    result = set()
     doc = parse_msg(sentence)
 
     # on lit tous les mots de la phrase
@@ -42,6 +42,10 @@ def get_heater_sources(sentence: str) -> Optional[list[str]]:
         max_src: str = None # source la plus proche de ce mot (None si aucune)
         # on regarde chaque source
         for source in sources:
+            # si on a une correspondance parfaite
+            if source == word.lower_:
+                max_src = source
+                break
             score = word.similarity(nlp(source))
             # si ce mot est plus proche que le mot actuel
             if score > max_value:
@@ -49,7 +53,7 @@ def get_heater_sources(sentence: str) -> Optional[list[str]]:
                 max_value = score
         # si on a trouvé un mot similaire
         if max_src:
-            result.append(max_src)
+            result.add(max_src)
     return result or None
 
 def get_distance_km(sentence: str) -> Optional[int]:
@@ -129,6 +133,7 @@ def get_clothes_number(sentence: str) -> int:
 
 if __name__ == '__main__':
     # src = get_heater_sources("Je me réchauffe principalement au fioul")
+    # print(get_heater_sources("Bois"))
     # surface = get_heater_surface("J'ai 1 151,7 m²")
     # print(src, surface)
     # print(get_heater_carbon(src, surface))
@@ -136,5 +141,5 @@ if __name__ == '__main__':
     # print(get_distance_km("5km par semaine en moyenne, avec 4 autres collègues"))
     # print(get_distance_km("je ne prend jamais ma voiture"))
     # print(get_diet("Je mange de tout et de temps en temps je suis vegan"))
-    print(get_clothes_number("Environ entre 15 et 8 vêtements"))
-    print(get_clothes_number("Je suis pauvre"))
+    # print(get_clothes_number("Environ entre 15 et 8 vêtements"))
+    # print(get_clothes_number("Je suis pauvre"))
