@@ -19,7 +19,7 @@ class AnswersManager:
     
     def get_answer(self, question: str) -> Optional[str]:
         "Get the best corresponding answer from a question, or None if not applicable"
-        sentence, max_score = None, 0.5
+        sentence, max_score = None, 0.65
         question = self.nlp(question)
         for doc, answer in self.questions:
             score = doc.similarity(question)
@@ -33,7 +33,7 @@ class AnswersManager:
 
 
 if __name__ == '__main__':
-    manager = AnswersManager()
-    question = "c'est quoi le bilan carbonscore?"
-    print(question, manager.get_answer(question))
+    manager = AnswersManager(spacy.load("fr_core_news_lg"))
+    for question in {"Quelle est la circonférence du Soleil ?", "C'est quoi un bilan carbon?", "quelle est l'empreinte carbon de la nouriture en françe ?"}:
+        print(question, "\n>", manager.get_answer(question))
 
