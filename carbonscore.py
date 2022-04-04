@@ -1,10 +1,12 @@
 import re
 from typing import Optional
 import spacy
-
-from parsing import parse_msg
+from spacy.tokens import Doc
 
 nlp = spacy.load("fr_core_news_lg")
+
+def parse_msg(msg: str) -> Doc:
+    return nlp(msg)
 
 def get_heater_carbon(sources: set[str], surface: int) -> Optional[int]:
     if len(sources) == 0:

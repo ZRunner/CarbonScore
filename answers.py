@@ -8,8 +8,8 @@ from spacy.tokens import Doc
 class AnswersManager:
     "Class used to answer custom questions (about carbonscore, ecology and other things)"
 
-    def __init__(self):
-        self.nlp = spacy.load("fr_core_news_lg")
+    def __init__(self, nlp: spacy.Language):
+        self.nlp = nlp
         self.questions: list[tuple[Doc, str]] = []
         # read questions and related answers from the csv
         with open('answers.csv', 'r', encoding='utf-8') as file:

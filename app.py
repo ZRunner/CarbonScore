@@ -10,6 +10,7 @@ from pymessenger.bot import Bot
 import answering.wolframAlpha as WolframAlpha
 from answers import AnswersManager
 from session import Session
+from carbonscore import nlp
 
 load_dotenv()
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN_MESSENGER")
@@ -20,7 +21,7 @@ app = Flask(__name__)
 
 app.logger.setLevel(logging.DEBUG)
 
-answerManager = AnswersManager()
+answerManager = AnswersManager(nlp)
 sessions: dict[str, Session] = {}
 
 presentation_message = """Bonjour, je suis le chatbot CarbonScore 👋
