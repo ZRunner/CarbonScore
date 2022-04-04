@@ -6,11 +6,19 @@ from parsing import parse_msg
 
 nlp = spacy.load("fr_core_news_lg")
 
-def get_heater_carbon(sources: dict[str, int], surface: int) -> Optional[int]:
+def get_heater_carbon(sources: list[str], surface: int) -> Optional[int]:
     if len(sources) == 0:
         return None
+    values = {
+        "fioul": 264,
+        "gaz": 208,
+        "électricité": 79,
+        "radiateur": 79,
+        "biométhane": 14,
+        "bois": 0
+    }
     surface = surface/len(sources)
-    return round(sum(surface*100*value for value in sources.values()))
+    return round(sum(surface*100*values[source] for source in sources))
 
 def get_heater_surface(sentence: str) -> int:
     if sentence.isnumeric():
@@ -21,16 +29,9 @@ def get_heater_surface(sentence: str) -> int:
         result += int(match.replace(' ', ''))
     return result or None
 
-def get_heater_sources(sentence: str) -> dict[str, int]:
-    sources = {
-        "fioul": 264,
-        "gaz": 208,
-        "électricité": 79,
-        "radiateur": 79,
-        "biométhane": 14,
-        "bois": 0
-    }
-    result = {}
+def get_heater_sources(sentence: str) -> Optional[list[str]]:
+    sources = ["fioul", "gaz", "électricité", "radiateur", "biométhane", "bois"]
+    result = []
     doc = parse_msg(sentence)
 
     # on lit tous les mots de la phrase
@@ -40,7 +41,7 @@ def get_heater_sources(sentence: str) -> dict[str, int]:
         max_value: float = 0.55 # plus grande similarité de source pour ce mot
         max_src: str = None # source la plus proche de ce mot (None si aucune)
         # on regarde chaque source
-        for source in sources.keys():
+        for source in sources:
             score = word.similarity(nlp(source))
             # si ce mot est plus proche que le mot actuel
             if score > max_value:
@@ -48,7 +49,7 @@ def get_heater_sources(sentence: str) -> dict[str, int]:
                 max_value = score
         # si on a trouvé un mot similaire
         if max_src:
-            result[max_src] = sources[max_src]
+            result.append(max_src)
     return result or None
 
 def get_distance_km(sentence: str) -> Optional[int]:

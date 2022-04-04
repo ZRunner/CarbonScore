@@ -13,9 +13,9 @@ class Session:
         self.last_activity = datetime.now()
         self.car_usage: Optional[int] = None # km/semaine
         self.flat_surface: Optional[int] = None # m²
-        self.heating_sources: Optional[dict[str, int]] = None
+        self.heating_sources: Optional[list[str]] = None
         self.screen_time: Optional[float] = None # par jour
-        self.diet : Optional[Literal['normal', 'vegetarien', 'vegan']] = None # par an
+        self.diet: Optional[Literal['normal', 'vegetarien', 'vegan']] = None # par an
         #self.redmeal_count: Optional[int] = None # par semaine
         self.clothes_count: Optional[int] = None # par mois
     
@@ -28,6 +28,15 @@ class Session:
     def has_ended(self):
         "If the user finished answering questions"
         return self.clothes_count is not None
+    
+    def reset(self):
+        "Reset every counter to default"
+        self.car_usage = None
+        self.flat_surface = None
+        self.heating_sources = None
+        self.screen_time = None
+        self.diet = None
+        self.clothes_count = None
 
     def get_callback(self) -> Optional[Callable[[str], None]]:
         if not self.doing_report:
@@ -59,13 +68,13 @@ class Session:
             return "Quel est votre régime alimentaire ? (Végan, végétarien, mange de tout)"
             #return "Combien de vos repas sont composés de viande rouge par semaine ? (bœuf, mouton...)"
         if self.clothes_count is None:
-            return "Combien de vêtements neufs achetez-vous chaque mois ?"
+            return "Dernière question !\nCombien de vêtements neufs achetez-vous chaque mois ?"
         total = round(self.total/1000)
         # voiture + energies + habillement + technologies + viandes/poissons + lait/œufs
         delta = total - (1972+1696+763+1180+1144+408)
         return f"""Votre empreinte carbonne moyenne est de {total}kg de CO2 par an, soit {abs(delta)}kg {'de plus' if delta>0 else 'de moins'} que la moyenne française.
         
-        Si vous avez d'autres question, je reste à votre disposition !"""
+Si vous avez d'autres question, je reste à votre disposition !"""
     
     def get_car_usage(self, msg: str):
         self.car_usage = get_distance_km(msg)
