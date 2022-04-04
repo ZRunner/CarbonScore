@@ -21,6 +21,11 @@ app.logger.setLevel(logging.DEBUG)
 
 sessions: dict[str, Session] = {}
 
+presentation_message = """Bonjour, je suis le chatbot CarbonScore 👋
+
+Mon but est de répondre à vos questions sur les émissions de carbone et de vous aider à établir votre propre bilan carbone.
+Si vous souhaitez commencer votre bilan carbone, dites simplement "bilan carbone". Sinon, je serai ravi de répondre à toutes vos questions !"""
+
 # We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
 def receive_message():
@@ -54,16 +59,25 @@ def treat_message(recipient_id: str, user_message: str):
     # retrieve user session
     if recipient_id in sessions:
         session = sessions.get(recipient_id)
+        # update last activity
+        session.last_activity = datetime.now()
     else:
+        # create a new session and save it
         session = Session(recipient_id)
         sessions[recipient_id] = session
-    # update last activity
-    session.last_activity = datetime.now()
+        # update last activity
+        session.last_activity = datetime.now()
+        # send presentation message and that's it
+        send_message(recipient_id, presentation_message)
+        return
+    # check if we should start a carbon report
+    if user_message.lower() == "bilan carbone":
+        session.started_report = True
     if callback := session.get_callback():
         # if a carbon report is in progress, process the user response then answer
         callback(user_message)
-        app.logger.info(f"{recipient_id=}  msg=\"{user_message}\" callback={callback.__name__} next=\"{session.get_next_question()}\"")
-        send_message(recipient_id, session.get_next_question())
+        app.logger.info(f"{recipient_id=}  msg=\"{user_message}\" callback={callback.__name__} next=\"{session.get_next_message()}\"")
+        send_message(recipient_id, session.get_next_message())
     else:
         # use WolframAlpha to get an answer
         app.logger.info(f"{recipient_id=}  msg=\"{user_message}\"")

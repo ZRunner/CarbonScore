@@ -7,6 +7,7 @@ from carbonscore import get_clothes_number, get_diet, get_distance_km, get_heate
 class Session:
     def __init__(self, userid: str):
         self.userid = userid
+        self.started_report = False
         self.last_activity = datetime.now()
         self.car_usage: Optional[int] = None # km/semaine
         self.flat_surface: Optional[int] = None # m²
@@ -15,8 +16,20 @@ class Session:
         self.diet : Optional[int] = None # par an
         #self.redmeal_count: Optional[int] = None # par semaine
         self.clothes_count: Optional[int] = None # par mois
+    
+    @property
+    def doing_report(self):
+        "If the user should be currently answering questions"
+        return self.started_report and not self.has_ended
+    
+    @property
+    def has_ended(self):
+        "If the user finished answering questions"
+        return self.clothes_count is not None
 
     def get_callback(self) -> Optional[Callable[[str], None]]:
+        if not self.doing_report:
+            return None
         if self.car_usage is None:
             return self.get_car_usage
         if self.flat_surface is None:
@@ -31,7 +44,7 @@ class Session:
             return self.get_clothes_count
         return None
     
-    def get_next_question(self) -> Optional[str]:
+    def get_next_message(self) -> Optional[str]:
         if self.car_usage is None:
             return "Combien de kilomètres parcourez-vous en voiture par semaine ?"
         if self.flat_surface is None:
