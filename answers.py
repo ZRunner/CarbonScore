@@ -15,7 +15,7 @@ class AnswersManager:
         with open('answers.csv', 'r', encoding='utf-8') as file:
             reader = csv.reader(file)
             for line in reader:
-                self.questions.append((self.nlp(line[0]), line[1]))
+                self.questions.append((self.nlp(line[0]), line[1].replace("\\n", "\n")))
     
     def get_answer(self, question: str) -> Optional[str]:
         "Get the best corresponding answer from a question, or None if not applicable"
