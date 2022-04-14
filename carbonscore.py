@@ -4,6 +4,10 @@ import spacy
 from spacy.tokens import Doc
 
 nlp = spacy.load("fr_core_news_lg")
+ruler = nlp.add_pipe("entity_ruler", config={"overwrite_ents": True})
+ruler.add_patterns([
+    {"label": "ORG", "pattern": "CarbonScore"},
+])
 
 def parse_msg(msg: str) -> Doc:
     return nlp(msg)
