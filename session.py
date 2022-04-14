@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Callable, Optional
 
-from pyparsing import Literal
+from typing import Literal
 
 from carbonscore import get_clothes_number, get_diet, get_distance_km, get_heater_carbon, get_heater_sources, get_heater_surface, get_time_hours
 

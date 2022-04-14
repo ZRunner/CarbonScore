@@ -1,10 +1,12 @@
 import re
 from typing import Optional
 import spacy
-
-from parsing import parse_msg
+from spacy.tokens import Doc
 
 nlp = spacy.load("fr_core_news_lg")
+
+def parse_msg(msg: str) -> Doc:
+    return nlp(msg)
 
 def get_heater_carbon(sources: set[str], surface: int) -> Optional[int]:
     if len(sources) == 0:
@@ -24,7 +26,7 @@ def get_heater_surface(sentence: str) -> int:
     if sentence.isnumeric():
         return int(sentence)
     result = 0
-    for match in re.findall(r'([\d\s]+)(?:[,.]\d+\s*)?(?:m|mètre|metre)', sentence.lower()):
+    for match in re.findall(r'(\d[\d\s]*)(?:[,.]\d+\s*)?(?:m|mètre|metre)', sentence.lower()):
         match: str
         result += int(match.replace(' ', ''))
     return result or None
@@ -63,7 +65,7 @@ def get_distance_km(sentence: str) -> Optional[int]:
         return 0
     result = None
     # distance
-    if match := re.search(r'([\d\s]+)(?:[,.]\d+\s*)?(?:km|kilomètres?)', sentence.lower()):
+    if match := re.search(r'(\d[\d\s]*)(?:[,.]\d+\s*)?(?:km|kilomètres?)', sentence.lower()):
         result = int(match.group(1).replace(' ', ''))
         # number of people
         if match2 := re.search(r'(\d+) (?:passagers?|personnes)', sentence.lower()):
