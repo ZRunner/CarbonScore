@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from flask import Flask, request
 from pymessenger.bot import Bot
 
-import answering.wolframAlpha as WolframAlpha
+import wolframAlpha as WolframAlpha
 from answers import AnswersManager
 from session import Session
 from carbonscore import nlp
