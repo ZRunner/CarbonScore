@@ -19,7 +19,7 @@ class AnswersManager:
     
     def get_answer(self, question: str) -> Optional[str]:
         "Get the best corresponding answer from a question, or None if not applicable"
-        sentence, max_score = None, 0.65
+        sentence, max_score = None, 0.7
         question = self.nlp(question)
         for doc, answer in self.questions:
             score = doc.similarity(question)
