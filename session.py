@@ -102,7 +102,7 @@ Si vous avez d'autres question, je reste à votre disposition !"""
 
     @property
     def car_emission(self): # /semaine
-        return self.car_usage*55 if self.car_usage else None
+        return self.car_usage*55 if self.car_usage is not None else None
     
     @property
     def heating_emission(self): # /an
@@ -112,7 +112,7 @@ Si vous avez d'autres question, je reste à votre disposition !"""
 
     @property
     def screen_emission(self): # /jour
-        return self.screen_time*40 if self.screen_time else None
+        return self.screen_time*40 if self.screen_time is not None else None
     
     @property
     def meal_emission(self): # gCO2/an
@@ -121,11 +121,11 @@ Si vous avez d'autres question, je reste à votre disposition !"""
             "vegetarien": 408,
             "vegan": 0
         }
-        return emissions[self.diet]*1000 if self.diet else None
+        return emissions[self.diet]*1000 if self.diet is not None else None
     
     @property
     def clothes_emission(self): # / mois
-        return self.clothes_count*15_000 if self.clothes_count else None
+        return self.clothes_count*15_000 if self.clothes_count is not None else None
     
     @property
     def total(self): # gCO2/an
